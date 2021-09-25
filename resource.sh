@@ -20,14 +20,15 @@ uptime \
 
 echo ','
 cat /proc/loadavg \
-  | awk '{printf "{\"item\":\"loadavg\",\"value\":[%s,%s,%s]}\n",$1,$2,$3}'
+  | awk '{printf "{\"item\":\"loadavg\",\"value\":{\"minute1\":%s,\"minute5\":%s,\"minute15\":%s}}\n",$1,$2,$3}'
 
 echo ','
+MEMTOTAL=$(cat /proc/meminfo |egrep 'MemTotal' |awk '{print $2}')
 echo '{"item":"mem","value":['
 cat /proc/meminfo \
   | egrep '^(MemTotal|MemFree|MemAvailable|Buffers|Cached)' \
   | sed -e 's/: */ /' \
-  | awk '{printf "{\"name\":\"%s\",\"value\":%d}", $1, $2}' \
+  | awk "{printf \"{\\\"name\\\":\\\"%s\\\",\\\"size\\\":%d,\\\"ratio\\\":%5.5f}\", \$1, \$2, \$2/$MEMTOTAL}" \
   | sed -e 's/}{/},{/g'
 echo ''
 echo ']}'
@@ -36,7 +37,7 @@ echo ','
 echo '{"item":"disk","value":['
 df \
   | egrep -v '^Filesystem' \
-  | awk '{printf "{\"name\":\"%s\",\"value\":[%d,%d,%5.5f]}", $6,$3,$4,$3/$4}' \
+  | awk '{printf "{\"name\":\"%s\",\"value\":{\"full\":%d,\"used\":%d,\"ratio\":%5.5f}}", $6,$3,$4,$3/$4}' \
   | sed -e 's/}{/},{/g'
 echo ''
 echo ']}'
