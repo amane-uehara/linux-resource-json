@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# find . -type f -iname '*.json*' |xargs -I{} sh debug-disk-usage.sh {}
+
 if echo $1 |grep 'json.gz$' > /dev/null ;then
   echo "debug $1" 1>&2
   zcat $1 \
