@@ -37,7 +37,7 @@ echo ','
 echo '{"item":"disk","value":['
 df \
   | egrep -v '^Filesystem' \
-  | awk '{printf "{\"name\":\"%s\",\"value\":{\"full\":%d,\"used\":%d,\"ratio\":%5.5f}}", $6,$3,$4,$3/$4}' \
+  | awk '{printf "{\"name\":\"%s\",\"value\":{\"full\":%d,\"used\":%d,\"ratio\":%5.5f}}", $6,$2,$3,$3/$2}' \
   | sed -e 's/}{/},{/g'
 echo ''
 echo ']}'
